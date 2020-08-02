@@ -1,17 +1,17 @@
-package com.example.demo;
+package com.backbase.tinyexpression;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+/**
+ * Spring boot application for tiny expression.
+ */
 @SpringBootApplication
 @EnableConfigurationProperties
-@EntityScan(basePackages = {"com.example.demo.persistence"})  // scan JPA entities
-public class DemoApplication {
+public class TinyExpressionApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(TinyExpressionApplication.class, args);
     }
-
 }
