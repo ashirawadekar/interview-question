@@ -52,3 +52,14 @@ Database persistence is configured using H2
 To access H2 console, update application properties in `application.yml`
 
 The login credentials could be found inside `application.yml`. 
+
+Scheduled Task for Purging expired urls
+=======================================
+
+- A Scheduled task is added to purge expired urls. The frequency of the task can be updated through 
+the cron expression in `application.yml` 
+
+```
+cron: # every 15 minutes
+  expression: "0 0/15 * * * *"
+``` 

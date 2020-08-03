@@ -25,7 +25,7 @@ public class LinkRepositoryTest {
      */
     @Test
     public void givenLinkRepository_WhenSaveAndRetrieveEntity_thenOK() {
-        Link link = linkRepository.save(new Link("http://www.backbase.com", "tiny", LocalDateTime.now()));
+        Link link = linkRepository.save(new Link("http://www.backbase.com", "tiny", LocalDateTime.now(), LocalDateTime.now().plusMinutes(30)));
         Optional<Link> linkRetrieved = linkRepository.findById(link.getId());
 
         assertThat(linkRetrieved.get()).isNotNull();
@@ -37,7 +37,7 @@ public class LinkRepositoryTest {
      */
     @Test
     public void givenLinkRepository_WhenRetrieveUnknownEntity_thenFail() {
-        Optional<Link> linkRetrieved = linkRepository.findByTinyExpression("random");
+        Optional<Link> linkRetrieved = linkRepository.findByTinyExpressionAndExpirationTimeAfter("random", LocalDateTime.now().minusMinutes(30));
 
         assertThat(linkRetrieved.isPresent()).isFalse();
     }
@@ -47,11 +47,22 @@ public class LinkRepositoryTest {
      */
     @Test
     public void givenLinkRepository_WhenSaveAndRetrieveEntityFromExpression_thenOK() {
-        Link link = linkRepository.save(new Link("http://www.backbase.com/tiny", "expression", LocalDateTime.now()));
-        Optional<Link> linkRetrieved = linkRepository.findByTinyExpression(link.getTinyExpression());
+        Link link = linkRepository.save(new Link("http://www.backbase.com/tiny", "expression", LocalDateTime.now(), LocalDateTime.now().plusMinutes(30)));
+        Optional<Link> linkRetrieved = linkRepository.findByTinyExpressionAndExpirationTimeAfter(link.getTinyExpression(), LocalDateTime.now().minusMinutes(30));
 
         assertThat(linkRetrieved.get()).isNotNull();
         assertThat(link.getLongUrl()).isEqualTo(linkRetrieved.get().getLongUrl());
+    }
+
+    /**
+     * Tests a link is can be saved and is in expired state, when tried to retrieved it not found.
+     */
+    @Test
+    public void givenLinkRepository_WhenSaveAndRetrieveEntityFromExpressionWhichIsExpired_thenNotFound() {
+        Link link = linkRepository.save(new Link("http://www.backbase.com/tiny", "expired", LocalDateTime.now(), LocalDateTime.now().minusMinutes(30)));
+        Optional<Link> linkRetrieved = linkRepository.findByTinyExpressionAndExpirationTimeAfter(link.getTinyExpression(), LocalDateTime.now().minusMinutes(30));
+
+        assertThat(linkRetrieved.isPresent()).isFalse();
     }
 }
 

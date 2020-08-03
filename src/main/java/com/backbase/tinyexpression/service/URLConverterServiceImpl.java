@@ -32,7 +32,8 @@ public class URLConverterServiceImpl implements URLConverterService {
 
     /**
      * Constructor for testing.
-     * @param linkRepository link repository
+     *
+     * @param linkRepository    link repository
      * @param sequenceGenerator sequence generator
      */
     public URLConverterServiceImpl(LinkRepository linkRepository, SequenceGenerator sequenceGenerator) {
@@ -49,7 +50,7 @@ public class URLConverterServiceImpl implements URLConverterService {
     @Override
     public String convertToTinyExpression(String url) {
         String tinyExpression = IDConverter.idToTinyExpression(sequenceGenerator.nextId());
-        linkRepository.save(new Link(url, tinyExpression, LocalDateTime.now()));
+        linkRepository.save(new Link(url, tinyExpression, LocalDateTime.now(), LocalDateTime.now().plusMinutes(30)));
         return tinyExpression;
     }
 
@@ -61,7 +62,7 @@ public class URLConverterServiceImpl implements URLConverterService {
      */
     @Override
     public String convertToLongURL(String tinyExpression) {
-        Optional<Link> link = linkRepository.findByTinyExpression(tinyExpression);
+        Optional<Link> link = linkRepository.findByTinyExpressionAndExpirationTimeAfter(tinyExpression, LocalDateTime.now());
         if (link.isPresent()) {
             return link.get().getLongUrl();
         }

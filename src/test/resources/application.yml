@@ -17,3 +17,5 @@ spring:
     console:
       enabled: false
 
+cron: # every 15 minutes
+  expression: "0 0/15 * * * *"

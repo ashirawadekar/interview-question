@@ -23,7 +23,7 @@ public class URLController {
     private static final Logger LOGGER = LoggerFactory.getLogger(URLController.class);
 
     @Autowired
-    URLConverterService urlConverterService;
+    private URLConverterService urlConverterService;
 
     /**
      * Default Constructor.
@@ -74,7 +74,7 @@ public class URLController {
     }
 
     /**
-     * Remove fragments from url.
+     * Remove fragment from url.
      *
      * @param url the url
      * @return cleaned url

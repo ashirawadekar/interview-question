@@ -7,21 +7,20 @@ import javax.persistence.*;
 import lombok.Data;
 
 /**
- * Link Entity.
+ * Archived Link Entity.
  */
 @Entity
 @Table(
-        name = "links",
+        name = "archived_links",
         indexes = @Index(
-                name = "idx_tiny_expression",
+                name = "idax_tiny_expression",
                 columnList = "tiny_expression",
                 unique = true
         )
 )
-public @Data class Link {
+public @Data class ArchivedLink {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Column(name = "long_url", nullable = false, columnDefinition = "TEXT")
@@ -37,20 +36,21 @@ public @Data class Link {
     private LocalDateTime expirationTime;
 
     /**
-     * Default constructor.
+     * Default Constructor.
      */
-    public Link() {
+    public ArchivedLink() {
     }
 
     /**
      * Constructor.
-     *
+     * @param id id.
      * @param longUrl long url.
      * @param tinyExpression tiny expression.
      * @param createTime create time.
      * @param expirationTime expiration time.
      */
-    public Link(String longUrl, String tinyExpression, LocalDateTime createTime, LocalDateTime expirationTime) {
+    public ArchivedLink(long id, String longUrl, String tinyExpression, LocalDateTime createTime, LocalDateTime expirationTime) {
+        this.id = id;
         this.longUrl = longUrl;
         this.tinyExpression = tinyExpression;
         this.createTime = createTime;
