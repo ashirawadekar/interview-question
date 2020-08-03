@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backbase.tinyexpression.exception.InvalidTinyExpressionException;
+import com.backbase.tinyexpression.exception.RecordNotFoundException;
 import com.backbase.tinyexpression.service.URLConverterService;
 import com.backbase.tinyexpression.util.URLValidator;
 
@@ -23,7 +23,7 @@ public class URLController {
     private static final Logger LOGGER = LoggerFactory.getLogger(URLController.class);
 
     @Autowired
-    private URLConverterService urlConverterService;
+    URLConverterService urlConverterService;
 
     /**
      * Default Constructor.
@@ -66,8 +66,8 @@ public class URLController {
             String longURL = urlConverterService.convertToLongURL(tinyExpression);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(longURL);
-        } catch (InvalidTinyExpressionException e) {
-            LOGGER.error("Failed to find long url for tinyExpression={}", tinyExpression, e);
+        } catch (RecordNotFoundException e) {
+            LOGGER.warn("Failed to find long url for tinyExpression={}", tinyExpression, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
         }

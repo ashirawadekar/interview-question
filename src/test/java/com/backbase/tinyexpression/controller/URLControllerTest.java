@@ -26,6 +26,8 @@ public class URLControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private static String tinyExpression;
+
     /**
      * Tests when a post request is received for long url, returns a tiny expression.
      *
@@ -37,7 +39,8 @@ public class URLControllerTest {
         MvcResult result = mockMvc.perform(post("/short")
                 .param("url", "https://stash.backbase.com/projects/PO/repos/payment-order-integration-spec/browse/src/main/resources/schemas/definitions.json#38"))
                 .andExpect(status().isCreated()).andReturn();
-        assertThat(result.getResponse().getContentAsString()).isEqualTo("b");
+        tinyExpression = result.getResponse().getContentAsString();
+        assertThat(tinyExpression).isNotNull();
     }
 
     /**
@@ -49,23 +52,41 @@ public class URLControllerTest {
     @Order(2)
     public void shouldReturnALongURL() throws Exception {
         MvcResult result = mockMvc.perform(get("/long")
-                .param("tiny", "b"))
+                .param("tiny", tinyExpression))
                 .andExpect(status().isOk()).andReturn();
         assertThat(result.getResponse().getContentAsString()).isEqualTo("https://stash.backbase.com/projects/PO/repos/payment-order-integration-spec/browse/src/main/resources/schemas/definitions.json");
     }
 
     /**
-     * Tests when a Get request is received for an invalid tiny expresion , correct response and error are returned.
+     * Tests a POST request for converting a long url to tiny expression and submits a GET request to retrieve the long url.
+     *
+     * @throws Exception exception
+     */
+    @Test
+    @Order(3)
+    public void shouldSaveATinyExpressionAndReturnALongURL() throws Exception {
+        MvcResult resultOne = mockMvc.perform(post("/short")
+                .param("url", "https://stash.backbase.com/projects/PO"))
+                .andExpect(status().isCreated()).andReturn();
+        String expression = resultOne.getResponse().getContentAsString();
+        MvcResult resultTwo = mockMvc.perform(get("/long")
+                .param("tiny", expression))
+                .andExpect(status().isOk()).andReturn();
+        assertThat(resultTwo.getResponse().getContentAsString()).isEqualTo("https://stash.backbase.com/projects/PO");
+    }
+
+    /**
+     * Tests when a Get request is received for an invalid tiny expresion, correct response and error are returned.
      *
      * @throws Exception exception.
      */
     @Test
-    @Order(3)
+    @Order(4)
     public void shouldReturnNotFoundForInvalidTinyExpression() throws Exception {
         MvcResult result = mockMvc.perform(get("/long")
                 .param("tiny", "abcd"))
                 .andExpect(status().isNotFound()).andReturn();
-        assertThat(result.getResponse().getContentAsString()).isEqualTo("Not Found or Invalid Tiny Expression");
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("URL not found in DB");
     }
 
     /**
@@ -74,7 +95,7 @@ public class URLControllerTest {
      * @throws Exception exception.
      */
     @Test
-    @Order(4)
+    @Order(5)
     public void shouldReturnBadRequestForInvalidURL() throws Exception {
         MvcResult result = mockMvc.perform(post("/short")
                 .param("url", "abcd.com"))

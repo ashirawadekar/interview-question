@@ -10,14 +10,14 @@ public class IDConverter {
      * @param id the id.
      * @return the tiny expression.
      */
-    public static String idToTinyExpression(int id) {
+    public static String idToTinyExpression(long id) {
 
         char map[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 
         StringBuilder shortURL = new StringBuilder();
 
         while(id > 0) {
-            shortURL.append(map[id % 62]);
+            shortURL.append(map[(int) (id % 62)]);
             id = id / 62;
         }
         return shortURL.reverse().toString();
@@ -25,11 +25,11 @@ public class IDConverter {
 
     /**
      * Helper method to get the id using the tiny expression.
-     * @param tinyExpression
-     * @return
+     * @param tinyExpression tiny expression.
+     * @return the id.
      */
-    public static int tinyExpressionToID(String tinyExpression) {
-        int id = 0;
+    public static long tinyExpressionToID(String tinyExpression) {
+        long id = 0;
 
         for(char ch : tinyExpression.toCharArray()) {
             if('a' <= ch && ch <= 'z'){

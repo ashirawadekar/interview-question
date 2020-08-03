@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:h2:file:./tiny
+    url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
     username: sa
     password: password
@@ -16,3 +16,4 @@ spring:
   h2:
     console:
       enabled: false
+

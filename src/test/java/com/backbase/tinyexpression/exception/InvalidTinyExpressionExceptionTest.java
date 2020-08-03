@@ -17,9 +17,9 @@ public class InvalidTinyExpressionExceptionTest {
      */
     @Test
     public void exceptionShouldBeThrown() {
-        Exception exception = assertThrows(InvalidTinyExpressionException.class, () -> {
-            IDToURLData.findLongURL("abcd");
-        });
+        Exception exception = assertThrows(InvalidTinyExpressionException.class,
+                () -> IDToURLData.findLongURL("abcd")
+        );
         assertThat(exception.getMessage()).isEqualTo("Not Found or Invalid Tiny Expression");
     }
 }
